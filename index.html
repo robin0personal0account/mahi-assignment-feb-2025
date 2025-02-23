@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mahi’s Schoolbook Study Hub 📚✨</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- jQuery CDN -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Schoolbell&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(to bottom right, #fff3e0, #e0f7fa, #f3e5f5);
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+            background-image: url('data:image/svg+xml,%3Csvg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="%23ffb6c1" fill-opacity="0.2" fill-rule="evenodd"%3E%3Cpath d="M0 40L40 0H20L0 20M40 40V20L20 40"%3E%3C/path%3E%3C/g%3E%3C/svg%3E');
+        }
+        .container {
+            background: #fff url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAG0lEQVQYV2NkYGBg+A8xAQMjIyPDLy8vQ0AEAH8oAUnV5OOCAAAAAElFTkSuQmCC') repeat;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: 2px solid #ffb6c1;
+        }
+        h1 { font-family: 'Schoolbell', cursive; color: #ff69b4; }
+        h2, h3 { font-family: 'Schoolbell', cursive; color: #4682b4; }
+        .highlight { font-weight: 600; color: #ff69b4; }
+        .card { transition: transform 0.3s ease, box-shadow 0.3s ease; cursor: pointer; border: 1px dashed #87ceeb; }
+        .card:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1); }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); z-index: 1000; }
+        .modal-content { position: relative; margin: 10% auto; width: 90%; max-width: 500px; background: #fff7f0; padding: 20px; border-radius: 10px; border: 2px solid #ffb6c1; }
+        .notification { position: fixed; top: 10px; right: 10px; z-index: 2000; }
+        .hidden { display: none; }
+        .progress-bar { height: 8px; border-radius: 4px; background: #e0e0e0; overflow: hidden; }
+        .progress-fill { height: 100%; background: #87ceeb; transition: width 0.3s ease; }
+        .game-card { cursor: pointer; transition: transform 0.3s ease; border: 1px solid #ffb6c1; }
+        .game-card.matched { background: #d4f1f4; transform: scale(1.05); }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px dotted #87ceeb; padding: 8px; text-align: left; }
+        .notebook { background: #fff7f0; border: 2px dashed #ff69b4; padding: 20px; font-family: 'Schoolbell', cursive; color: #4682b4; }
+
+        /* Responsive Adjustments */
+        @media (max-width: 640px) {
+            .container { padding: 4px; margin: 4px; max-width: 100%; }
+            h1 { font-size: 2rem; }
+            h2 { font-size: 1.25rem; }
+            .text-3xl { font-size: 1.125rem; }
+            .card { padding: 12px; font-size: 0.875rem; height: auto; min-height: 100px; }
+            .grid-cols-3, .grid-cols-4 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+            .sm\\:flex-row { flex-direction: column; }
+            .sm\\:space-x-4 { gap: 8px; }
+            table { font-size: 0.75rem; }
+            .game-card { width: 80px; height: 80px; font-size: 0.75rem; }
+            .modal-content { width: 95%; padding: 12px; }
+            .notebook { padding: 12px; font-size: 0.875rem; }
+        }
+        @media (min-width: 641px) and (max-width: 768px) {
+            .grid-cols-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .grid-cols-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Main Container -->
+    <div class="container mx-auto p-6 sm:p-4 max-w-4xl mt-8 mb-8">
+        <!-- Header -->
+        <header class="text-center mb-10">
+            <h1 class="text-5xl sm:text-4xl font-bold mb-4">Mahi’s Schoolbook Study Hub 📚✨</h1>
+            <p class="text-xl sm:text-lg text-gray-600 italic">Module 1: Marketing Magic</p>
+        </header>
+
+        <!-- Encouragement -->
+        <section class="text-center mb-10">
+            <h2 class="text-3xl font-semibold mb-4">You’re My Study Superhero, Mahi! 🌈</h2>
+            <p class="text-lg sm:text-base text-gray-500 max-w-2xl mx-auto">
+                Heya Mahi! You’re gonna sparkle in that exam with this cute little study book—cards, Q&A, games, and even your assignment done! Let’s make learning fun! 🌟
+            </p>
+        </section>
+
+        <!-- Progress Tracker -->
+        <section class="mb-10">
+            <h2 class="text-2xl font-semibold mb-4"><i class="fas fa-star mr-2 text-teal-400"></i> Your Study Stars</h2>
+            <div class="progress-bar"><div id="progress-fill" class="progress-fill" style="width: 0%;"></div></div>
+            <p id="progress-text" class="text-sm text-gray-500 mt-2">0% Done - You’re a Star!</p>
+        </section>
+
+        <!-- Info Cards -->
+        <section class="mb-10">
+            <h2 class="text-2xl font-semibold mb-6"><i class="fas fa-book mr-2 text-pink-400"></i> Study Cards</h2>
+            <div id="info-cards" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                <div class="card bg-gray-100 p-6 rounded-lg flex items-center justify-center" data-details="A place where people trade stuff! 🏪 <span class='highlight'>Physical</span>: Like a shop where you chat with sellers. 🌐 <span class='highlight'>Virtual</span>: Online, like Amazon!">
+                    <p class="text-gray-700 text-center"><i class="fas fa-store mr-2 text-teal-400"></i> What’s a <span class="highlight">Market</span>?</p>
+                </div>
+                <div class="card bg-gray-100 p-6 rounded-lg flex items-center justify-center" data-details="Dr. Kotler says: 'It’s the fun art of making and sharing <span class=\"highlight\">value</span> to make people happy and earn money!' 📈 Think research 🔍, ads 📣, selling 💰, and shipping 🚚!">
+                    <p class="text-gray-700 text-center"><i class="fas fa-chart-bar mr-2 text-pink-400"></i> What’s <span class="highlight">Marketing</span>?</p>
+                </div>
+                <div class="card bg-gray-100 p-6 rounded-lg flex items-center justify-center" data-details="💡 <span class='highlight'>Needs</span>: Stuff we gotta have (like water). 🌟 <span class='highlight'>Wants</span>: Cool things we dream about (like a new phone). 💸 <span class='highlight'>Demand</span>: When we can buy it!">
+                    <p class="text-gray-700 text-center"><i class="fas fa-heart mr-2 text-peach-400"></i> <span class="highlight">Needs, Wants, Demand</span></p>
+                </div>
+                <div class="card bg-gray-100 p-6 rounded-lg flex items-center justify-center" data-details="All about making customers happy! Uses a <span class='highlight'>pull strategy</span>—like Amazon’s speedy delivery 🚚 and personal picks!">
+                    <p class="text-gray-700 text-center"><i class="fas fa-users mr-2 text-mint-400"></i> <span class="highlight">Marketing Concept</span></p>
+                </div>
+                <div class="card bg-gray-100 p-6 rounded-lg flex items-center justify-center" data-details="Mixes happy customers, profit, and caring for the world 🌍! Like Patagonia making eco-stuff ♻️!">
+                    <p class="text-gray-700 text-center"><i class="fas fa-globe mr-2 text-teal-400"></i> <span class="highlight">Societal Marketing</span></p>
+                </div>
+                <div class="card bg-gray-100 p-6 rounded-lg flex items-center justify-center" data-details="Focuses on awesome quality and new ideas! Like Apple’s fancy iPhones 📱!">
+                    <p class="text-gray-700 text-center"><i class="fas fa-box mr-2 text-pink-400"></i> <span class="highlight">Product Concept</span></p>
+                </div>
+                <div class="card bg-gray-100 p-6 rounded-lg flex items-center justify-center" data-details="Cheap and easy-to-get products! Walmart does this with low prices 💵 and tons of stuff!">
+                    <p class="text-gray-700 text-center"><i class="fas fa-industry mr-2 text-peach-400"></i> <span class="highlight">Production Concept</span></p>
+                </div>
+                <div class="card bg-gray-100 p-6 rounded-lg flex items-center justify-center" data-details="Pushes stuff with big sales talk! Like insurance people calling you 📞!">
+                    <p class="text-gray-700 text-center"><i class="fas fa-bullhorn mr-2 text-mint-400"></i> <span class="highlight">Selling Concept</span></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Q&A Section (25+ Items) -->
+        <section class="mb-10">
+            <h2 class="text-2xl font-semibold mb-6"><i class="fas fa-question mr-2 text-teal-400"></i> Q&A Notebook</h2>
+            <input id="search-qna" type="text" placeholder="Find Answers..." class="w-full p-3 mb-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-300">
+            <div id="qna-list" class="space-y-4">
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold text-gray-700"><i class="fas fa-store mr-2 text-pink-400"></i> What’s a <span class="highlight">market</span>?</h3>
+                    <p class="text-gray-600 text-sm">Where people trade goodies! 🏪 <span class="highlight">Physical</span>: Shops like a candy store 🍬. 🌐 <span class="highlight">Virtual</span>: Online like Flipkart!</p>
+                </div>
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold text-gray-700"><i class="fas fa-chart-bar mr-2 text-teal-400"></i> What’s <span class="highlight">marketing</span>?</h3>
+                    <p class="text-gray-600 text-sm">Kotler says it’s about making <span class="highlight">value</span> to make folks happy and earn cash! 📈 Think ads 📺 and deliveries 🚚!</p>
+                </div>
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold text-gray-700"><i class="fas fa-heart mr-2 text-peach-400"></i> What’s <span class="highlight">Needs, Wants, Demand</span>?</h3>
+                    <p class="text-gray-600 text-sm">💡 <span class="highlight">Needs</span>: Must-haves like water 💧. 🌟 <span class="highlight">Wants</span>: Fun stuff like ice cream 🍦. 💸 <span class="highlight">Demand</span>: When I can buy it!</p>
+                </div>
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold text-gray-700"><i class="fas fa-users mr-2 text-mint-400"></i> What’s the <span class="highlight">Marketing Concept</span>?</h3>
+                    <p class="text-gray-600 text-sm">Making customers smile with a <span class="highlight">pull strategy</span>! Amazon’s quick shipping 🚚 rocks this!</p>
+                </div>
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold text-gray-700"><i class="fas fa-globe mr-2 text-teal-400"></i> What’s <span class="highlight">Societal Marketing</span>?</h3>
+                    <p class="text-gray-600 text-sm">Happy customers + happy planet 🌍! Like TOMS giving shoes 👟 for every pair sold!</p>
+                </div>
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold text-gray-700"><i class="fas fa-box mr-2 text-pink-400"></i> What’s the <span class="highlight">Product Concept</span>?</h3>
+                    <p class="text-gray-600 text-sm">Super cool quality stuff! Apple’s iPhones 📱 are the best example!</p>
+                </div>
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold text-gray-700"><i class="fas fa-industry mr-2 text-peach-400"></i> What’s the <span class="highlight">Production Concept</span>?</h3>
+                    <p class="text-gray-600 text-sm">Cheap and everywhere! Walmart’s low prices 💵 make it happen!</p>
+                </div>
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold text-gray-700"><i class="fas fa-bullhorn mr-2 text-mint-400"></i> What’s the <span class="highlight">Selling Concept</span>?</h3>
+                    <p class="text-gray-600 text-sm">Big sales push! Like those insurance calls 📞 that won’t stop!</p>
+                </div>
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold text-gray-700"><i class="fas fa-trophy mr-2 text-pink-400"></i> Why is marketing <span class="highlight">awesome</span>?</h3>
+                    <p class="text-gray-600 text-sm">It makes <span class="highlight">value</span> 🎁, friends 🤝, and money 📊! Like Starbucks’ cozy vibes!</p>
+                </div>
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold text-gray-700"><i class="fas fa-flag mr-2 text-teal-400"></i> Step 1: <span class="highlight">Mission</span>?</h3>
+                    <p class="text-gray-600 text-sm">Why the company exists! Google’s is “organize info” 🌐!</p>
+                </div>
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold text-gray-700"><i class="fas fa-search mr-2 text-mint-400"></i> Step 2: <span class="highlight">Situation Analysis</span>?</h3>
+                    <p class="text-gray-600 text-sm">Check what’s good 💪 and tricky ⚠️! Like Nike looking at trends!</p>
+                </div>
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold text-gray-700"><i class="fas fa-bullseye mr-2 text-peach-400"></i> Step 3: <span class="highlight">Marketing Strategy</span>?</h3>
+                    <p class="text-gray-600 text-sm">Pick your crowd 🎯, set goals 📏, and plan cash 💰! Coca-Cola loves teens!</p>
+                </div>
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold text-gray-700"><i class="fas fa-cogs mr-2 text-pink-400"></i> Step 4: <span class="highlight">Marketing Mix</span>?</h3>
+                    <p class="text-gray-600 text-sm">7 P’s: Stuff 🎁, Price 💵, Place 🏪, Ads 📣, People 👥, Process ⚙️, Proof 🏬!</p>
+                </div>
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold text-gray-700"><i class="fas fa-rocket mr-2 text-teal-400"></i> Step 5: <span class="highlight">Implementation & Control</span>?</h3>
+                    <p class="text-gray-600 text-sm">Go for it 🚀 and check it 📅! Pepsi tracks sales monthly!</p>
+                </div>
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold text-gray-700"><i class="fas fa-search-plus mr-2 text-mint-400"></i> What’s <span class="highlight">SWOT</span>?</h3>
+                    <p class="text-gray-600 text-sm">Good stuff 💪, oopsies ⚠️, chances 🌟, and baddies ⚡! Walmart’s got low prices but tough competition!</p>
+                </div>
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold text-gray-700"><i class="fas fa-globe-americas mr-2 text-peach-400"></i> What’s <span class="highlight">PEST</span>?</h3>
+                    <p class="text-gray-600 text-sm">Rules 🏛️, money 💰, people 👥, and tech 💻! Tesla loves new tech!</p>
+                </div>
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold text-gray-700"><i class="fas fa-leaf mr-2 text-pink-400"></i> What’s the <span class="highlight">business environment</span>?</h3>
+                    <p class="text-gray-600 text-sm"><span class="highlight">Micro</span> 🔍: Close stuff (customers). <span class="highlight">Macro</span> 🌍: Big stuff (economy)!</p>
+                </div>
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold text-gray-700"><i class="fas fa-user mr-2 text-teal-400"></i> What’s a <span class="highlight">target audience</span>?</h3>
+                    <p class="text-gray-600 text-sm">Who loves your stuff! Like kids for candy 🍭!</p>
+                </div>
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold text-gray-700"><i class="fas fa-money-bill mr-2 text-mint-400"></i> What’s a <span class="highlight">marketing budget</span>?</h3>
+                    <p class="text-gray-600 text-sm">Money for ads 📺 and fun stuff! Adidas spends big on sports ads!</p>
+                </div>
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold text-gray-700"><i class="fas fa-building mr-2 text-peach-400"></i> What’s <span class="highlight">micro environment</span>?</h3>
+                    <p class="text-gray-600 text-sm">Little things nearby! Customers 👥, suppliers 🚛 (e.g., Starbucks’ coffee beans).</p>
+                </div>
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold text-gray-700"><i class="fas fa-earth mr-2 text-pink-400"></i> What’s <span class="highlight">macro environment</span>?</h3>
+                    <p class="text-gray-600 text-sm">Big world stuff! Money 💰, laws 🏛️ (e.g., Netflix watching trends).</p>
+                </div>
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold text-gray-700"><i class="fas fa-shopping-bag mr-2 text-teal-400"></i> What’s <span class="highlight">Physical Evidence</span>?</h3>
+                    <p class="text-gray-600 text-sm">Cool stuff you see! Like Starbucks’ cozy cafes 🏬!</p>
+                </div>
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold text-gray-700"><i class="fas fa-people-carry mr-2 text-mint-400"></i> What’s <span class="highlight">People</span> in 7 P’s?</h3>
+                    <p class="text-gray-600 text-sm">The friendly helpers! Like Starbucks’ baristas 👥!</p>
+                </div>
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold text-gray-700"><i class="fas fa-cog mr-2 text-peach-400"></i> What’s <span class="highlight">Process</span> in 7 P’s?</h3>
+                    <p class="text-gray-600 text-sm">How it all works! Like McDonald’s fast food line ⚙️!</p>
+                </div>
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold text-gray-700"><i class="fas fa-handshake mr-2 text-pink-400"></i> How does marketing build <span class="highlight">friendships</span>?</h3>
+                    <p class="text-gray-600 text-sm">With trust and fun! Like Starbucks’ rewards 🌟!</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Examples Section -->
+        <section class="mb-10">
+            <h2 class="text-2xl font-semibold mb-6"><i class="fas fa-star mr-2 text-yellow-400"></i> Fun Examples</h2>
+            <div class="space-y-4">
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold text-gray-700"><i class="fas fa-shopping-cart mr-2 text-teal-400"></i> Amazon</h3>
+                    <p class="text-gray-600 text-sm">Pulls you in with quick shipping 🚚 and cool picks 📱!</p>
+                </div>
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold text-gray-700"><i class="fas fa-leaf mr-2 text-mint-400"></i> Patagonia</h3>
+                    <p class="text-gray-600 text-sm">Green gear ♻️ that loves the planet 🌍!</p>
+                </div>
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold text-gray-700"><i class="fas fa-mobile mr-2 text-pink-400"></i> Apple</h3>
+                    <p class="text-gray-600 text-sm">Fancy iPhones 📱 and MacBooks 💻—so cool!</p>
+                </div>
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold text-gray-700"><i class="fas fa-store-alt mr-2 text-peach-400"></i> Walmart</h3>
+                    <p class="text-gray-600 text-sm">Cheap stuff everywhere 💵 thanks to big buys!</p>
+                </div>
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold text-gray-700"><i class="fas fa-phone mr-2 text-teal-400"></i> Insurance Firms</h3>
+                    <p class="text-gray-600 text-sm">Pushy sales 📞 to get you signed up!</p>
+                </div>
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold text-gray-700"><i class="fas fa-coffee mr-2 text-mint-400"></i> Starbucks</h3>
+                    <p class="text-gray-600 text-sm">Yummy coffee ☕, cozy cafes 🏬, and happy baristas 👥!</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Game to Learn Section -->
+        <section class="mb-10">
+            <h2 class="text-2xl font-semibold mb-6"><i class="fas fa-gamepad mr-2 text-mint-400"></i> Play & Learn: Match Time!</h2>
+            <div id="game-board" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                <div class="game-card bg-gray-100 p-4 rounded-lg text-center" data-match="Marketing Concept">Happy Customers</div>
+                <div class="game-card bg-gray-100 p-4 rounded-lg text-center" data-match="Marketing Concept">Pull Strategy</div>
+                <div class="game-card bg-gray-100 p-4 rounded-lg text-center" data-match="Societal Marketing">Planet Love</div>
+                <div class="game-card bg-gray-100 p-4 rounded-lg text-center" data-match="Societal Marketing">Eco-Friendly</div>
+                <div class="game-card bg-gray-100 p-4 rounded-lg text-center" data-match="Product Concept">Cool Quality</div>
+                <div class="game-card bg-gray-100 p-4 rounded-lg text-center" data-match="Product Concept">New Ideas</div>
+                <div class="game-card bg-gray-100 p-4 rounded-lg text-center" data-match="Production Concept">Cheap Stuff</div>
+                <div class="game-card bg-gray-100 p-4 rounded-lg text-center" data-match="Production Concept">Everywhere</div>
+            </div>
+            <div class="mt-4 flex justify-between items-center">
+                <p id="game-score" class="text-gray-600 text-sm">Matches: 0/4</p>
+                <p id="game-timer" class="text-gray-600 text-sm">Time: 00:00</p>
+            </div>
+            <button id="reset-game" class="mt-4 bg-teal-400 text-white font-light py-2 px-4 rounded-full hover:bg-teal-500">Start Over</button>
+        </section>
+
+        <!-- Assignment Section -->
+        <section class="mb-10">
+            <h2 class="text-2xl font-semibold mb-6"><i class="fas fa-pencil-alt mr-2 text-peach-400"></i> Mahi’s Assignment</h2>
+            <div class="notebook">
+                <h3 class="text-xl mb-4">Heyy! Here’s My Starbucks SWOT 📓</h3>
+                <p class="text-lg">Team: Me, Priya, Anu, and Riya 🌸</p>
+                <p class="text-lg mb-4">Due: Before Jan 29, 2025</p>
+                <h4 class="text-lg mb-2">Intro to Starbucks ☕</h4>
+                <p class="text-sm mb-4">Starbucks is this super cool coffee company from Seattle that started way back in 1971. They’re all about yummy coffee, cozy vibes, and making everyone feel special! They’ve got stores everywhere—like over 30,000 spots around the world! Plus, they sell tea, snacks, and cute mugs too! ☕💖</p>
+                <h4 class="text-lg mb-2">SWOT Analysis ✏️</h4>
+                <p class="text-sm"><span class="highlight">Strengths 💪:</span> Everyone knows Starbucks—such a big name! Their coffee’s the best, and they’ve got tons of loyal fans (like me!). They’ve got stores all over, and their baristas are so nice! Oh, and they make lots of money from fancy drinks like Pumpkin Spice Lattes! 🍂</p>
+                <p class="text-sm"><span class="highlight">Weaknesses ⚠️:</span> Sometimes their stuff costs a lot—like, more than my pocket money! They mostly depend on coffee, so if coffee prices go up, oops! And some people say they’re not super green yet.</p>
+                <p class="text-sm"><span class="highlight">Opportunities 🌟:</span> They could make more eco-friendly cups ♻️ and sell in new places like small towns! Maybe add cheaper drinks for us students too! They could also team up with cool brands for fun stuff!</p>
+                <p class="text-sm mb-4"><span class="highlight">Threats ⚡:</span> Dunkin’ and local cafes are sneaky competition! If people stop liking fancy coffee or the economy gets weird, that’s tricky. Plus, rules about coffee beans could mess things up!</p>
+                <p class="text-sm">So, that’s my Starbucks homework! Hope you like it—it was fun to write! ☕✨ Love, Mahi</p>
+            </div>
+        </section>
+
+        <!-- Study Tips -->
+        <section class="mb-10">
+            <h2 class="text-2xl font-semibold mb-6"><i class="fas fa-lightbulb mr-2 text-yellow-400"></i> Mahi’s Study Tricks</h2>
+            <ul class="space-y-4 text-gray-600 text-sm">
+                <li><i class="fas fa-clock mr-2 text-pink-400"></i> Study 25 mins, chill 5—keep it fun!</li>
+                <li><i class="fas fa-pen mr-2 text-teal-400"></i> Write it your way—it sticks better!</li>
+                <li><i class="fas fa-check mr-2 text-mint-400"></i> Peek at cards every day—you’re a whiz!</li>
+                <li><i class="fas fa-heart mr-2 text-peach-400"></i> Sip water, nap—you’re a study queen!</li>
+            </ul>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-gray-500 text-sm mt-10">
+            <p>Made with <i class="fas fa-heart text-pink-400"></i> for Mahi | Rock That Exam! 🌸</p>
+        </footer>
+    </div>
+
+    <!-- Modal for Info Card Details -->
+    <div id="info-modal" class="modal">
+        <div class="modal-content">
+            <span id="close-modal" class="absolute top-2 right-2 text-2xl text-gray-600 cursor-pointer hover:text-gray-800">×</span>
+            <p id="modal-details" class="text-gray-600 text-sm"></p>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification"></div>
+
+    <!-- JavaScript -->
+    <script>
+        $(document).ready(function() {
+            // Fade In Container
+            $('.container').hide().fadeIn(1500);
+
+            // Info Cards with Modal
+            let viewedCards = 0;
+            const totalCards = $('.card').length;
+            $('.card').click(function() {
+                const details = $(this).data('details');
+                $('#modal-details').html(details);
+                $('#info-modal').fadeIn(300);
+                if (!$(this).hasClass('viewed')) {
+                    viewedCards++;
+                    $(this).addClass('viewed');
+                    updateProgress();
+                    showNotification('You’re learning so fast, Mahi! 🌟', 'bg-teal-400');
+                }
+            });
+            $('#close-modal').click(() => $('#info-modal').fadeOut(300));
+
+            // Update Progress
+            function updateProgress() {
+                const percentage = (viewedCards / totalCards) * 100;
+                $('#progress-fill').css('width', percentage + '%');
+                $('#progress-text').text(`${Math.round(percentage)}% Done - You’re a Star!`);
+            }
+
+            // Search Q&A
+            $('#search-qna').on('input', function() {
+                const query = $(this).val().toLowerCase();
+                $('#qna-list > div').each(function() {
+                    const text = $(this).text().toLowerCase();
+                    $(this).toggle(text.includes(query));
+                });
+            });
+
+            // Game to Learn: Matching with Timer
+            let selectedCards = [];
+            let matches = 0;
+            const totalMatches = 4;
+            let seconds = 0;
+            let timerInterval;
+
+            function startTimer() {
+                timerInterval = setInterval(() => {
+                    seconds++;
+                    const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
+                    const secs = (seconds % 60).toString().padStart(2, '0');
+                    $('#game-timer').text(`Time: ${mins}:${secs}`);
+                }, 1000);
+            }
+            startTimer();
+
+            $('.game-card').click(function() {
+                if ($(this).hasClass('matched') || selectedCards.length >= 2) return;
+                $(this).addClass('selected bg-gray-200');
+                selectedCards.push($(this));
+                if (selectedCards.length === 2) {
+                    const [card1, card2] = selectedCards;
+                    if (card1.data('match') === card2.data('match')) {
+                        matches++;
+                        card1.addClass('matched');
+                        card2.addClass('matched');
+                        $('#game-score').text(`Matches: ${matches}/${totalMatches}`);
+                        showNotification('Yay, a match! You’re amazing, Mahi! 🌟', 'bg-mint-400');
+                        if (matches === totalMatches) {
+                            clearInterval(timerInterval);
+                            showNotification('You won! You’re a study wizard! 🎉', 'bg-teal-400');
+                        }
+                    } else {
+                        setTimeout(() => {
+                            card1.removeClass('selected bg-gray-200');
+                            card2.removeClass('selected bg-gray-200');
+                        }, 1000);
+                    }
+                    selectedCards = [];
+                }
+            });
+            $('#reset-game').click(function() {
+                $('.game-card').removeClass('matched selected bg-gray-200');
+                matches = 0;
+                seconds = 0;
+                $('#game-score').text(`Matches: 0/${totalMatches}`);
+                $('#game-timer').text(`Time: 00:00`);
+                clearInterval(timerInterval);
+                startTimer();
+                showNotification('New game—go get ‘em, Mahi! 🌈', 'bg-peach-400');
+            });
+
+            // Notification System
+            function showNotification(message, bgColor) {
+                const notification = $(`<div class="p-3 sm:p-2 ${bgColor} text-white rounded-lg shadow-lg text-sm">${message}</div>`).hide();
+                $('#notification').html(notification);
+                notification.fadeIn(300).delay(3000).fadeOut(300, () => notification.remove());
+            }
+        });
+    </script>
+</body>
+</html>
